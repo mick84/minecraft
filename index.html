@@ -6,11 +6,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Minecraft</title>
     <link rel="stylesheet" href="./public/style/style.css" />
-    <script defer type="module" src="./public/js/app.js"></script>
+    <script defer src="./public/js/app.js"></script>
   </head>
   <body>
     <div class="container">
-      <div id="intro-page"></div>
+      <div id="intro-page" class="flex">
+        <button id="start">Start new game</button>
+      </div>
+      <div id="game-page" class="flex hidden">
+        <div id="board"></div>
+        <section id="controls" class="flex">
+          <section id="tools" class="flex">
+            <div class="tool" id="axe"></div>
+            <div class="tool" id="pickaxe"></div>
+            <div class="tool" id="shovel"></div>
+            <div class="tool" id="scythe"></div>
+          </section>
+          <section id="inventory" class="flex">
+            <div class="inventory-item">
+              <div class="item-picture wood"></div>
+              <p class="quantity">0</p>
+            </div>
+            <div class="inventory-item">
+              <div class="item-picture stones"></div>
+              <p class="quantity">0</p>
+            </div>
+            <div class="inventory-item">
+              <div class="item-picture soil"></div>
+              <p class="quantity">0</p>
+            </div>
+            <div class="inventory-item">
+              <div class="item-picture grass"></div>
+              <p class="quantity">0</p>
+            </div>
+          </section>
+          <form id="buttons" class="flex">
+            <button type="submit">Restart</button>
+            <button type="reset">Undo</button>
+          </form>
+        </section>
+      </div>
     </div>
   </body>
 </html>
