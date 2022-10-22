@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Minecraft</title>
     <link rel="stylesheet" href="./public/style/style.css" />
-    <script defer src="./public/js/app.js"></script>
+    <script defer src="./public/js/app.js" type="module"></script>
   </head>
   <body>
     <div class="container">
@@ -14,37 +14,37 @@
         <button id="start">Start new game</button>
       </div>
       <div id="game-page" class="flex hidden">
-        <div id="board"></div>
-        <section id="controls" class="flex">
-          <section id="tools" class="flex">
+        <div id="board" class="theme-night"></div>
+        <div id="controls" class="flex">
+          <div id="tools" class="flex">
             <div class="tool" id="axe"></div>
             <div class="tool" id="pickaxe"></div>
             <div class="tool" id="shovel"></div>
             <div class="tool" id="scythe"></div>
-          </section>
-          <section id="inventory" class="flex">
+          </div>
+          <div id="inventory" class="flex">
             <div class="inventory-item">
-              <div class="item-picture wood"></div>
+              <div class="item-picture" data-item="wood"></div>
               <p class="quantity">0</p>
             </div>
             <div class="inventory-item">
-              <div class="item-picture stones"></div>
+              <div class="item-picture" data-item="stones"></div>
               <p class="quantity">0</p>
             </div>
             <div class="inventory-item">
-              <div class="item-picture soil"></div>
+              <div class="item-picture" data-item="soil"></div>
               <p class="quantity">0</p>
             </div>
             <div class="inventory-item">
-              <div class="item-picture grass"></div>
+              <div class="item-picture" id="grass" data-item="grass"></div>
               <p class="quantity">0</p>
             </div>
-          </section>
+          </div>
           <form id="buttons" class="flex">
             <button type="submit">Restart</button>
             <button type="reset">Undo</button>
           </form>
-        </section>
+        </div>
       </div>
     </div>
   </body>

@@ -307,6 +307,9 @@ body #game-page #board {
   aspect-ratio: 1;
   background-image: url(/public/images/sky.jpg);
 }
+body #game-page #board.theme-night {
+  background-image: url(/public/images/night-sky.jpg);
+}
 body #game-page #board .block {
   background-size: contain;
 }
@@ -358,6 +361,9 @@ body #game-page #controls #inventory .inventory-item .item-picture {
   background-size: cover;
   margin: auto;
 }
+body #game-page #controls #inventory .inventory-item .item-picture#grass {
+  background-image: url(/public/images/grass.jpg);
+}
 body #game-page #controls #inventory .inventory-item .quantity {
   text-align: center;
   color: white;
@@ -375,20 +381,25 @@ body #game-page #controls #buttons {
   display: none;
 }
 
-.wood {
+[data-item=wood] {
   background-image: url(/public/images/kora.jpg);
 }
 
-.stones {
+[data-item=stones] {
   background-image: url(/public/images/stone.webp);
 }
 
-.soil {
+[data-item=soil] {
   background-image: url(/public/images/soil.jpg);
 }
 
-.grass {
-  background-image: url(/public/images/grass1.webp);
+[data-item=grass] {
+  background-image: url(/public/images/grass1.png);
+}
+
+.player {
+  background-image: url(/public/images/steve-left.png);
+  background-repeat: no-repeat;
 }
 
 * {
