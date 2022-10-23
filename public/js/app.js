@@ -3,30 +3,44 @@
     const trees = [
         {
             name: "poplar",
-            height: 7,
-            width: 5,
             scheme: [
                 ["", "", "l", "", ""],
                 ["", "l", "l", "l", ""],
-                ["l", "l", "l", "l", "l"],
+                ["", "l", "l", "l", ""],
+                ["l", "l", "w", "l", "l"],
+                ["l", "l", "w", "l", "l"],
                 ["", "l", "w", "l", ""],
-                ["", "", "w", "", ""],
+                ["", "l", "w", "l", ""],
                 ["", "", "w", "", ""],
                 ["", "", "w", "", ""],
             ],
         },
         {
             name: "spruce",
-            height: 7,
-            width: 7,
+            scheme: [
+                ["", "", "l", "", ""],
+                ["", "", "l", "", ""],
+                ["", "l", "l", "l", ""],
+                ["", "l", "w", "l", ""],
+                ["l", "l", "w", "l", "l"],
+                ["l", "l", "w", "l", "l"],
+                ["", "", "w", "", ""],
+                ["", "", "w", "", ""],
+            ],
+        },
+        {
+            name: "baobab",
             scheme: [
                 ["", "", "", "l", "", "", ""],
                 ["", "", "l", "l", "l", "", ""],
                 ["", "l", "l", "l", "l", "l", ""],
-                ["l", "l", "l", "l", "l", "l", "l"],
-                ["", "", "", "w", "", "", ""],
-                ["", "", "", "w", "", "", ""],
-                ["", "", "", "w", "", "", ""],
+                ["", "l", "l", "w", "l", "l", ""],
+                ["", "l", "l", "w", "l", "l", ""],
+                ["l", "l", "w", "w", "w", "l", "l"],
+                ["l", "l", "w", "w", "w", "l", "l"],
+                ["l", "l", "w", "w", "w", "l", "l"],
+                ["", "", "w", "w", "w", "", ""],
+                ["", "", "w", "w", "w", "", ""],
             ],
         },
     ];
@@ -42,11 +56,6 @@
     class App {
         constructor() {
             this.maxInventory = 12;
-            this.direction = "right";
-            this.coords = {
-                row: 16,
-                col: 2,
-            };
             const numOfRows = getComputedStyle(board)
                 .getPropertyValue("grid-template-rows")
                 .split(" ").length;
@@ -56,10 +65,28 @@
             startBtn.addEventListener("click", () => this.start());
             board.addEventListener("click", function (e) {
                 //2 modes: take item to inventory, and put item from inventory.
-                //need addeventlistener instead!
                 const el = e.target;
                 const item = el.dataset?.item ?? "";
                 if (item in App.inventory && el.dataset.tool === App.currentTool) {
+                    //check if you can reach this item: one of its neighbor cells must not be block!
+                    const st = getComputedStyle(el);
+                    const [gridRowStart, gridColumnStart] = [
+                        st.gridRowStart,
+                        st.gridColumnStart,
+                    ];
+                    console.log(gridRowStart, gridColumnStart);
+                    const neighbors = [...board.children].filter((el) => {
+                        const style = getComputedStyle(el);
+                        const [r, c] = [+style.gridRowStart, +style.gridColumnStart];
+                        return (((r === +gridRowStart - 1 || r === +gridRowStart + 1) &&
+                            c === +gridColumnStart) ||
+                            ((c === +gridColumnStart - 1 || c === +gridColumnStart + 1) &&
+                                r === +gridRowStart));
+                    });
+                    console.log(neighbors);
+                    if (neighbors.length === 4) {
+                        throw new Error(`Can't reach this item!`);
+                    }
                     //take to inventory:
                     App.inventory[item]++;
                     //update number on the screen:
@@ -79,6 +106,47 @@
                     toolCtrl.children[newToolIndex].classList.add("active");
                 }
             });
+            inventoryCtrl.addEventListener("click", function (e) {
+                const target = e.target;
+                if (!target.classList.contains("inventory-item")) {
+                    return;
+                }
+                const item = target
+                    .querySelector(".item-picture")
+                    .getAttribute("data-item");
+                //get qty of item from state:
+                const quantity = App.inventory[item];
+                if (quantity === 0) {
+                    throw new Error("Nothing to take!");
+                }
+                App.inventory[item]--;
+                //now we should put it to the free grid cell:
+                const el = document.createElement("div");
+                el.classList.add("block");
+                el.setAttribute("data-item", item);
+                let tool = "axe";
+                switch (item) {
+                    case "grass":
+                        tool = "scythe";
+                        break;
+                    case "stones":
+                        tool = "pickaxe";
+                        break;
+                    case "soil":
+                        tool = "shovel";
+                        break;
+                }
+                el.setAttribute("data-tool", tool);
+                App.itemPickedToBuild = el;
+            });
+            if (App.itemPickedToBuild) {
+                board.addEventListener("click", function (e) {
+                    const target = e.target;
+                    if (target.classList.contains("block")) {
+                        return;
+                    }
+                });
+            }
         }
         resetState() {
             App.currentTool = "";
@@ -87,19 +155,69 @@
             }
         }
         start() {
-            console.log("start");
             introPage.classList.toggle("hidden");
             gamePage.classList.toggle("hidden");
-            const cells = [...board.children];
-            const cell = cells.find((el) => {
-                const crds = el.style.gridArea.split(" ").filter((el) => !isNaN(+el));
-                return +crds[0] === this.coords.row && +crds[1] === this.coords.col;
-            });
-            console.log(cell);
+            const randomTree = () => trees[Math.floor(Math.random() * trees.length)];
+            const [tree1, tree2] = [randomTree(), randomTree()];
+            const place1 = Math.floor(4 * Math.random() + tree1.scheme[0].length / 2);
+            const place2 = Math.floor(20 - 4 * Math.random() - tree2.scheme[0].length / 2);
+            this.putFigure(place1, tree1.name);
+            this.putFigure(place2, tree2.name);
         }
-        plantTree(row, col, treeName) {
-            //check if cell[row][col] is grass
-            //check if there are free rectangle with height 7 and width 5 for tree or 7 for spruce:
+        putFigure(col, treeName) {
+            const cells = [...board.children];
+            const cellToPlant = cells.filter((el) => el.dataset.item === "grass")[col];
+            const level = parseInt(cellToPlant.style.gridRow);
+            //check if there is enough width to plant:
+            const tree = trees.find((t) => t.name === treeName);
+            if (!tree) {
+                throw new Error(`Tree with name ${treeName} does not exist!`);
+            }
+            const [treeHeight, treeWidth] = [
+                tree.scheme.length,
+                tree.scheme[0].length,
+            ];
+            //check if tree will be inside the borders
+            const hw = Math.floor(treeWidth / 2);
+            const cols = getComputedStyle(board).gridTemplateColumns.split(" ").length;
+            if (col - hw < 0 || col + hw > cols) {
+                throw new Error("Out of the borders!");
+            }
+            //check if there are no blocks in needed area:
+            const blocks = cells.filter((cell) => {
+                const area = getComputedStyle(cell).gridArea;
+                const [r, c] = area
+                    .split(" ")
+                    .map((el) => +el)
+                    .filter((el) => !isNaN(el));
+                //   console.log(r, c);
+                //needed area: [col-hw,col+hw] X [level-treeHeight,level]
+                return (col - hw <= c &&
+                    c <= col + hw &&
+                    level - treeHeight <= r &&
+                    r <= level);
+            });
+            //console.log(blocks);
+            for (let i = 0; i < treeHeight; i++) {
+                for (let j = 0; j < treeWidth; j++) {
+                    if (!tree.scheme[i][j]) {
+                        continue;
+                    }
+                    const seg = document.createElement("div");
+                    seg.classList.add("block");
+                    seg.setAttribute("data-tool", "axe");
+                    seg.style.gridArea = `${level - treeHeight + i + 1} / ${col - hw + j + 1}`;
+                    switch (tree.scheme[i][j]) {
+                        case "w":
+                            seg.setAttribute("data-item", "wood");
+                            break;
+                        case "l":
+                            seg.setAttribute("data-item", "leaves");
+                            break;
+                    }
+                    board.appendChild(seg);
+                }
+            }
         }
         fillGrid(depth, bottom, material) {
             const boardWidth = getComputedStyle(board)
@@ -126,6 +244,7 @@
                             tool = "axe";
                             break;
                         case "grass":
+                            //  block.classList.remove("block");
                             tool = "scythe";
                             break;
                     }
@@ -139,6 +258,13 @@
     }
     App.tools = ["axe", "pickaxe", "shovel", "scythe"];
     App.currentTool = "";
-    App.inventory = { stones: 0, soil: 0, wood: 0, grass: 0 };
+    App.inventory = {
+        stones: 0,
+        soil: 0,
+        wood: 0,
+        leaves: 0,
+        grass: 0,
+    };
+    App.itemPickedToBuild = null;
     new App();
 }
