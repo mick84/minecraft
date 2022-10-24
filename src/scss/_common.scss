@@ -1,0 +1,110 @@
+body {
+  #intro-page {
+    background-image: url(/public/images/bgr.png);
+    background-color: black;
+    height: 100vh;
+    width: 100vw;
+    background-size: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    button {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      translate: -50%;
+      color: white;
+      background-color: transparent;
+      font-weight: bold;
+      border: 2px solid white;
+    }
+  }
+  #game-page {
+    display: flex;
+    justify-content: center;
+    position: relative;
+    height: 100vh;
+    width: 100vw;
+    #board {
+      /// height: 100%;
+      display: grid;
+      ///width: 100%;
+      grid-template-rows: repeat(20, 1fr);
+      grid-template-columns: repeat(var(--grid-columns), 1fr);
+      grid-auto-flow: column;
+      border: 1px solid;
+      position: relative;
+      aspect-ratio: 1;
+      background-image: url(/public/images/sky.jpg);
+      &.theme-night {
+        background-image: url(/public/images/night-sky.jpg);
+      }
+      .block {
+        background-size: contain;
+
+        //aspect-ratio: 1;
+      }
+    }
+
+    #controls {
+      padding: 1rem;
+      flex-direction: column;
+      justify-content: space-evenly;
+      background-color: rgb(71, 36, 7);
+      gap: 1rem; //width: fit-content;
+      #tools {
+        justify-content: space-around;
+        gap: 0.5rem;
+        .tool {
+          height: 70px;
+          width: 70px;
+          border-radius: 0.5rem;
+          border: 2px solid white;
+          background-size: contain;
+          background-repeat: no-repeat;
+          background-color: white;
+          &.active {
+            border-color: green;
+          }
+          &#axe {
+            background-image: url(/public/images/axe.png);
+          }
+          &#pickaxe {
+            background-image: url(/public/images/pickaxe.png);
+          }
+          &#shovel {
+            background-image: url(/public/images/shovel.png);
+          }
+          &#scythe {
+            background-image: url(/public/images/kosa.png);
+          }
+        }
+      }
+      #inventory {
+        justify-content: space-around;
+
+        .inventory-item {
+          height: 5rem;
+
+          background-color: gray;
+          .item-picture {
+            height: 3rem;
+            width: 3rem;
+            background-size: cover;
+            margin: auto;
+            &#grass {
+              background-image: url(/public/images/grass.jpg);
+            }
+          }
+          .quantity {
+            text-align: center;
+            color: white;
+            margin: 0.5rem 0;
+          }
+        }
+      }
+      #buttons {
+        justify-content: space-around;
+      }
+    }
+  }
+}

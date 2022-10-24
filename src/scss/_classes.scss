@@ -1,0 +1,24 @@
+.flex {
+  display: flex;
+}
+.hidden {
+  display: none;
+}
+[data-item="wood"] {
+  background-image: url(/public/images/kora.jpg);
+}
+[data-item="stones"] {
+  background-image: url(/public/images/stone.webp);
+}
+[data-item="soil"] {
+  background-image: url(/public/images/soil.jpg);
+}
+
+[data-item="grass"] {
+  background-size: cover;
+  background-image: url(/public/images/grass1.png);
+}
+[data-item="leaves"] {
+  background-size: contain;
+  background-image: url(/public/images/tree-leaves.webp);
+}
